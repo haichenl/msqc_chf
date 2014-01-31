@@ -1,4 +1,4 @@
-tandem Hartree-fock approach
+tandem Hartree-Fock approach
 
 ** removed most of the "not useful" functionalities
 
