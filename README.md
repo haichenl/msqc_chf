@@ -1,4 +1,5 @@
-<<<<<<< HEAD
+tandem Hartree-fock approach
+
 ** removed most of the "not useful" functionalities
 
 ** moved skipline.m and findText.m into @Fragment
