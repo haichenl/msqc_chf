@@ -7,7 +7,3 @@
 
 ** @Model4/transhf handles the Hartree-Fock after a transformation matrix is given
 
-=======
-msqc_conshf
-===========
->>>>>>> 492aec7d2488daf7c881cf841daa0627880d7177
