@@ -33,9 +33,7 @@ classdef Model4 < handle
         density_transhf
         % used to start HF iterations
     end
-    methods (Static)
-        h2 = H2slater(F0, G1, F2)
-    end
+    
     methods
         
         function res = Model4(frag_)

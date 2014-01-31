@@ -1,8 +1,8 @@
 clear classes;
-filebasename1 = 'etch';
-fullfilename1 = strcat('C:\working\matlab\msqc_chf\fitting\', filebasename1, '.mat');
+filebasename1 = 'met3b';
+fullfilename1 = strcat('C:\working\matlab\msqc_tandemhf\fitting\', filebasename1, '.mat');
 % filebasename2 = 'etch';
-% fullfilename2 = strcat('C:\working\matlab\msqc_conshf\fitting\', filebasename2, '.mat');
+% fullfilename2 = strcat('C:\working\matlab\msqc_tandemhf\fitting\', filebasename2, '.mat');
 
 fs = {};
 xref = zeros(1,20);

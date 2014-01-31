@@ -10,51 +10,51 @@ theta = obj.pars.ang_pars(1);
 rc(1,3) = rbond * cosd(theta);
 rc(2,3) = rbond * sind(theta);
 for iatom = 4:length(obj.atoms)
-   % basing on code below, so using that notation
-   b = obj.pars.bond_pars(iatom - 1);
-   a = obj.pars.ang_pars(iatom - 2);
-   t   = obj.pars.di_pars(iatom - 3);
-   k1 = obj.atoms{iatom}.bond_ref;
-   k2 = obj.atoms{iatom}.ang_ref;
-   k3 = obj.atoms{iatom}.di_ref;
-   % reference vectors (r# is (x#,y#,z#) below)
-   % r1 is unit vector: Atheta - Abond
-   r1 = rc(:,k2)-rc(:,k1);
-   r1 = r1/norm(r1);  
-   % r2 is Aphi - Atheta projected into perp plane
-   r2 = rc(:,k3)-rc(:,k2);
-   r2 = r2 - dot(r1,r2) * r1;
-   r2 = r2/norm(r2);
-   % r3 is cross product of above
-   r3 = cross(r1,r2);
-   r3 = r3/norm(r3);
-   rc(:,iatom) = rc(:,k1) + b*(cosd(a)*r1 + sind(a)* ...
-      (cosd(t)*r2 - sind(t)*r3)  );
+    % basing on code below, so using that notation
+    b = obj.pars.bond_pars(iatom - 1);
+    a = obj.pars.ang_pars(iatom - 2);
+    t   = obj.pars.di_pars(iatom - 3);
+    k1 = obj.atoms{iatom}.bond_ref;
+    k2 = obj.atoms{iatom}.ang_ref;
+    k3 = obj.atoms{iatom}.di_ref;
+    % reference vectors (r# is (x#,y#,z#) below)
+    % r1 is unit vector: Atheta - Abond
+    r1 = rc(:,k2)-rc(:,k1);
+    r1 = r1/norm(r1);
+    % r2 is Aphi - Atheta projected into perp plane
+    r2 = rc(:,k3)-rc(:,k2);
+    r2 = r2 - dot(r1,r2) * r1;
+    r2 = r2/norm(r2);
+    % r3 is cross product of above
+    r3 = cross(r1,r2);
+    r3 = r3/norm(r3);
+    rc(:,iatom) = rc(:,k1) + b*(cosd(a)*r1 + sind(a)* ...
+        (cosd(t)*r2 - sind(t)*r3)  );
 end
 % Gaussian convention is apparently different, this fixes it
 rc = rc([2 3 1],:);
 % above is based on gjftogcrt from: http://charles.karney.info/b2d-scripts/
 % #! /bin/sh
-% 
+%
 % ID='$Id: gjftogms.awk 5724 2004-12-03 15:28:39Z ckarney $'
-% 
+%
 % usage="
 % $ID
 % (c) 2004, Sarnoff Corporation, Princeton, NJ, USA
-% 
+%
 % This shell script converts a Gaussian input file to a pure Cartesian
 % representation.
-% 
+%
 % Run as a filter:
-% 
+%
 %     $0 [-h] < input > output
-% 
+%
 % Optional argument -h prints this message.
-% 
+%
 % For more info see:
 %    http://www.gaussian.com
 % "
-% 
+%
 % while getopts h c; do
 %     case $c in
 %         h ) echo "usage: $usage"; exit;;
@@ -62,17 +62,17 @@ rc = rc([2 3 1],:);
 %     esac
 % done
 % shift `expr $OPTIND - 1`
-% 
+%
 % # If more than zero arguments passed
 % if [ $# -ne 0 ]; then
 %    echo "usage: $usage" 1>&2
 %    exit 1
 % fi
-% 
+%
 % #
 % # Beginning of main shell script
 % #
-% 
+%
 % awk '
 % BEGIN {
 %     proc = 0;
@@ -111,7 +111,7 @@ rc = rc([2 3 1],:);
 % 				# At the end; do nothing
 %     } else {			# Processing header
 % 	printf "%s\n", $0;
-% 	if (substr($1, 1, 1) == "#") { 
+% 	if (substr($1, 1, 1) == "#") {
 % 	    control = $0;
 % 	    track = 1;
 % 	} else if (track > 0) {
@@ -124,7 +124,7 @@ rc = rc([2 3 1],:);
 % 		proc = 1;
 % 	    }
 % 	}
-%     }    
+%     }
 % }
 % END {
 %     delete x; delete y; delete z;
@@ -132,26 +132,26 @@ rc = rc([2 3 1],:);
 %     x[-1] = 1; y[-1] = 1; z[-1] = 0;
 %     for (i = 1; i <= natoms; i++) {
 % 	$0 = line[i];
-% 
+%
 % 	if (NF == 1) {		# Starting position
 % 	    x[i] = 0; y[i] = 0; z[i] = 0;
-% 
+%
 % 	} else if (NF == 4) {	# Cartesian line
 % 	    x[i] = $2; y[i] = $3; z[i] = $4;
-% 
+%
 % 	} else if (NF == 3 || NF == 5 || NF == 7 ) { # Z-matrix line
-% 
+%
 % # Look up atom indices
 % 	    k1 = lookupatom($2);
 % 	    k2 = lookupatom($4);
 % 	    k3 = lookupatom($6);
-% 
+%
 % # Look up values.  Note: only one level of evaluation and only var,
 % # -var, +var suported (Gamess supports -var)
 % 	    b = lookupvar($3);
 % 	    a = lookupvar($5);
 % 	    t = lookupvar($7);
-% 
+%
 % # Support initial "partial" Z-matrix entries
 % 	    if (NF == 3) {
 % 		k2 = i - 2; a = 90; # 2nd atom on x axis
@@ -161,12 +161,12 @@ rc = rc([2 3 1],:);
 % 	    }
 % 	    a *= deg; t *= deg;	# Convert to radians
 % 	    x[i] = x[k1]; y[i] = y[k1]; z[i] = z[k1];
-% 
+%
 % # First reference vector
 % 	    x1 = x[k2] - x[k1]; y1 = y[k2] - y[k1]; z1 = z[k2] - z[k1];
 % 	    norm = sqrt(x1^2 + y1^2 + z1^2);
 % 	    x1 /= norm; y1 /= norm; z1 /= norm;
-% 
+%
 % # Second reference vector
 % 	    x2 = x[k3] - x[k2]; y2 = y[k3] - y[k2]; z2 = z[k3] - z[k2];
 % 	    norm = x1 * x2 + y1 * y2 + z1 * z2;	# Project into perp plane
@@ -175,12 +175,12 @@ rc = rc([2 3 1],:);
 % 	    if (norm > 0) {	# Can skip if sin(a) == 0.
 % 		x2 /= norm; y2 /= norm; z2 /= norm;
 % 	    }
-% 
+%
 % # Third reference vector
 % 	    x3 = y1 * z2 - y2 * z1;
 % 	    y3 = z1 * x2 - z2 * x1;
 % 	    z3 = x1 * y2 - x2 * y1;
-% 
+%
 % # Compute final position
 % 	    x[i] += b * (cos(a) * x1 + sin(a) * (cos(t) * x2 - sin(t) * x3));
 % 	    y[i] += b * (cos(a) * y1 + sin(a) * (cos(t) * y2 - sin(t) * y3));

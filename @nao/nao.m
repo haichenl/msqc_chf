@@ -32,6 +32,7 @@ classdef nao < handle
             pnao = zeros(obj.nbasis); % transforms AO to pre-NAO
             n_red = zeros(obj.nbasis); % transforms AO to NAO
             w_pnao = zeros(obj.nbasis); % weighted occupation of pre-NAOs
+            w_red = zeros(obj.nbasis); % weighted occupation of rediagonalized pre-NAOs
             w_nao = zeros(obj.nbasis); % weighted occupation of NAOs
             
             % symmetrically average over dens and s
@@ -80,12 +81,19 @@ classdef nao < handle
             % re-diagonalization
             new_symm_avg_densp = orpnao'*symm_avg_densp*orpnao;
             for i=1:n_almblocks
-                [n_red(obj.almblocks{i}, obj.almblocks{i}), w_nao(obj.almblocks{i}, obj.almblocks{i})] = eig(new_symm_avg_densp(obj.almblocks{i},obj.almblocks{i}));
+                [n_red(obj.almblocks{i}, obj.almblocks{i}), w_red(obj.almblocks{i}, obj.almblocks{i})] = eig(new_symm_avg_densp(obj.almblocks{i},obj.almblocks{i}));
             end
             
             ao_to_nao_tr = orpnao*n_red;
-            c_nmb = ao_to_nao_tr(:, nmb_indices);
-            w_nmb = diag(ao_to_nao_tr(:, nmb_indices)'*symm_avg_densp*ao_to_nao_tr(:, nmb_indices));
+            w_nao = ao_to_nao_tr'*symm_avg_densp*ao_to_nao_tr;
+            
+            % separate nmb with nrb again while keeping their original order
+            [~, sep_ag_ordervec] = sort(diag(w_nao), 'descend');
+            nmb_indices_final = sort(sep_ag_ordervec(1:obj.n_nmb));
+%             nrb_indices_final = sort(sep_ag_ordervec(obj.n_nmb+1:obj.nbasis));
+            
+            c_nmb = ao_to_nao_tr(:, nmb_indices_final);
+            w_nmb = diag(ao_to_nao_tr(:, nmb_indices_final)'*symm_avg_densp*ao_to_nao_tr(:, nmb_indices_final));
             
         end
         
